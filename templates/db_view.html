@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Database View{% endblock %}
+
+{% block content %}
+<div class="dbview-layout">
+  <div class="dbview-header">
+    <div>
+      <h1 class="dbview-title">Isi Database</h1>
+      <p class="dbview-sub">Tabel <code>user</code> — SQLite · Hanya untuk tujuan edukasi</p>
+    </div>
+    <span class="row-count">{{ users|length }} baris</span>
+  </div>
+
+  <div class="warning-banner">
+    ⚠️ <strong>Peringatan:</strong> Halaman ini hanya tersedia untuk demo. Di aplikasi produksi, jangan pernah menampilkan isi database secara publik.
+  </div>
+
+  {% if users %}
+  <div class="table-wrap">
+    <table class="db-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Password Hash (Bcrypt)</th>
+          <th>Dibuat</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td class="td-id">#{{ u.id }}</td>
+          <td class="td-user">
+            <div class="mini-avatar">{{ u.username[0].upper() }}</div>
+            {{ u.username }}
+          </td>
+          <td>{{ u.email }}</td>
+          <td class="td-hash">
+            <div class="hash-cell">
+              <span class="hash-part algo">$2b$12$</span><span class="hash-part salt" title="Salt">{{ u.password_hash[7:29] }}</span><span class="hash-part hashp" title="Hash">{{ u.password_hash[29:] }}</span>
+            </div>
+          </td>
+          <td class="td-date">{{ u.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="legend-bar">
+    <div class="legend-item"><span class="lsq algo"></span> Algoritma + Work Factor</div>
+    <div class="legend-item"><span class="lsq salt"></span> Salt (22 char)</div>
+    <div class="legend-item"><span class="lsq hashp"></span> Hash (31 char)</div>
+  </div>
+
+  <div class="proof-card">
+    <div class="proof-title">📌 Bukti Keamanan Hash</div>
+    <div class="proof-body">
+      Perhatikan bahwa meskipun dua user mendaftar dengan password yang <strong>sama</strong>, hash yang tersimpan di database akan <strong>berbeda</strong> — karena setiap hash mengandung salt yang unik dan acak. Ini mencegah serangan <em>rainbow table</em>.
+    </div>
+  </div>
+  {% else %}
+  <div class="db-empty">
+    Belum ada user terdaftar. <a href="{{ url_for('register') }}">Daftar sekarang</a>
+  </div>
+  {% endif %}
+
+  <div class="action-row">
+    <a href="{{ url_for('dashboard') }}" class="btn-secondary">← Dashboard</a>
+  </div>
+</div>
+{% endblock %}

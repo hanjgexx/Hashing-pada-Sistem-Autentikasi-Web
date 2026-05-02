@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="auth-layout">
+  <!-- Panel Kiri: Form -->
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-icon">→</div>
+      <h1 class="auth-title">Masuk</h1>
+      <p class="auth-sub">Sistem akan memverifikasi password dengan hash di database.</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('login') }}" id="login-form">
+      <div class="field">
+        <label class="field-label" for="username">Username</label>
+        <input class="field-input" type="text" id="username" name="username"
+               value="{{ username or '' }}" placeholder="Masukkan username" required autocomplete="off">
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="password">Password</label>
+        <div class="input-wrap">
+          <input class="field-input" type="password" id="password" name="password"
+                 placeholder="Masukkan password" required>
+          <button type="button" class="eye-btn" onclick="toggleEye('password', this)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-primary">
+        <span class="btn-text">Login</span>
+      </button>
+    </form>
+
+    <p class="auth-switch">Belum punya akun? <a href="{{ url_for('register') }}">Daftar di sini</a></p>
+  </div>
+
+  <!-- Panel Kanan: Info Teknis -->
+  <div class="info-panel">
+    <div class="info-header">
+      <span class="info-badge">VERIFIKASI</span>
+      <h2 class="info-title">Proses Login</h2>
+    </div>
+    <div class="info-steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <div class="step-title">Input Password</div>
+          <div class="step-desc">User memasukkan password plaintext</div>
+        </div>
+      </div>
+      <div class="step-arrow">↓</div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <div class="step-title">Ambil Hash dari DB</div>
+          <div class="step-desc">Hash yang tersimpan diambil berdasarkan username</div>
+        </div>
+      </div>
+      <div class="step-arrow">↓</div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <div class="step-title">Ekstrak Salt & Re-hash</div>
+          <div class="step-desc">Salt diambil dari hash, lalu password di-hash ulang</div>
+        </div>
+      </div>
+      <div class="step-arrow">↓</div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <div class="step-title">Bandingkan Hash</div>
+          <div class="step-desc">Perbandingan constant-time mencegah timing attack</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="security-note">
+      <div class="note-title">🔒 Keamanan</div>
+      <div class="note-text">Pesan error sengaja generik ("username atau password salah") agar attacker tidak dapat menebak apakah username terdaftar atau tidak.</div>
+    </div>
+  </div>
+</div>
+{% endblock %}
